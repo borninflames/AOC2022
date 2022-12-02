@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace AOC2022_Day_1
+﻿namespace AOC2022_Day_1
 {
     internal class Program
     {
