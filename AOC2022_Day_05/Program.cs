@@ -25,9 +25,15 @@ namespace AOC2022_Day_05
                     var howMany = int.Parse(opParts[1]);
                     var from = int.Parse(opParts[3]) - 1;
                     var to = int.Parse(opParts[5]) - 1;
+                    Stack<char> tempStack = new();
                     for (int i = 0; i < howMany; i++)
                     {
-                        stacks[to].Push(stacks[from].Pop());
+                        tempStack.Push(stacks[from].Pop());                        
+                    }
+
+                    while (tempStack.Any())
+                    {
+                        stacks[to].Push(tempStack.Pop());
                     }
                 }
             }
