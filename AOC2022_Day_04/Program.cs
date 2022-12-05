@@ -7,7 +7,7 @@
             Console.WriteLine("Hello, Advent of Code 2022 Day 04");
 
             var lines = File.ReadAllLines("Input2.txt");
-            var sum = lines.Where(line => FullyContains(line)).ToList().Count;
+            var sum = lines.Where(line => Overlaps(line)).ToList().Count;
 
             Console.WriteLine($"The sum is: {sum}");
         }
@@ -23,6 +23,19 @@
             var common = section1.Intersect(section2).ToList();
 
             return common.Count == section1.Count || common.Count == section2.Count;
+        }
+
+        static bool Overlaps(string line)
+        {
+            var sections = line.Split(',');
+            var minMax = sections[0].Split("-").Select(int.Parse).ToArray();
+            var section1 = Enumerable.Range(minMax[0], minMax[1] - minMax[0] + 1).ToList();
+            minMax = sections[1].Split("-").Select(int.Parse).ToArray();
+            var section2 = Enumerable.Range(minMax[0], minMax[1] - minMax[0] + 1).ToList();
+
+            var overlaps = section1.Intersect(section2).ToList().Any();
+
+            return overlaps;
         }
     }
 }
