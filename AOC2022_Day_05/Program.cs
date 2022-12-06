@@ -6,7 +6,7 @@ namespace AOC2022_Day_05
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, Advent of Code 2022 Day 04");
+            Console.WriteLine("Hello, Advent of Code 2022 Day 05");
 
             var lines = File.ReadAllLines("Input2.txt");
             var stacks = CreateStacks(lines);
