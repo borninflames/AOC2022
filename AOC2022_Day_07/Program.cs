@@ -6,10 +6,15 @@ namespace AOC2022_Day_07
     {
         static int Sum { get; set; }
         static int SizeLimit { get; set; } = 100000;
+
+        static int TotalDiskSpace = 70000000;
+        static int RequiredDiskSpace = 30000000;
+        static List<Dir> directories = new List<Dir>();
         static void Main(string[] args)
         {
             Console.WriteLine("Hello, Advent of Code 2022 Day 07");
-            var lines = File.ReadAllLines("Input2.txt");            
+            var lines = File.ReadAllLines("Input2.txt");
+            
             var root = new Dir("/", null);
             var current = root;
             foreach (var line in lines)
@@ -65,9 +70,15 @@ namespace AOC2022_Day_07
                     }
                 }
             }
+            var rootSize = GetDirSize(root);
+            Console.WriteLine($"Capacity: {TotalDiskSpace} bytes; We need {RequiredDiskSpace} bytes; We use {rootSize} bytes.");
+            Console.WriteLine($"Free space: {TotalDiskSpace-rootSize} bytes;");
+            var freeSpaceNeeded = RequiredDiskSpace - (TotalDiskSpace - rootSize);
+            Console.WriteLine($"We have to free up {freeSpaceNeeded} bytes...");
 
-            Console.WriteLine(GetDirSize(root));
-            Console.WriteLine(Sum);
+            Console.WriteLine(directories.Where(d => d.Size >= freeSpaceNeeded).OrderBy(d => d.Size).First().Size);
+
+            //Console.WriteLine(Sum);
         }
 
         static int GetDirSize(Dir node)
@@ -75,6 +86,9 @@ namespace AOC2022_Day_07
             var fileSizeSum = node.Files.Sum(f => f.Size);
             var subDirSizeSum = node.SubDirs.Sum(d => GetDirSize(d));
             var fullSize = fileSizeSum + subDirSizeSum;
+            node.Size = fullSize;
+            directories.Add(node);
+            //part1 logic
             if (fullSize <= SizeLimit)
             {
                 Sum += fullSize;
@@ -92,6 +106,7 @@ namespace AOC2022_Day_07
         }
 
         public string Name { get; set; }
+        public int Size { get; set; }
         public Dir? Parent { get; set; }
 
         public List<Dir> SubDirs { get; set; } = new();
