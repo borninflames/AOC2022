@@ -8,12 +8,13 @@
             var moves = File.ReadAllLines("Input2.txt");
             var rope = new Rope();
             Console.CursorVisible = false;
+            rope.Show();
             foreach (var move in moves)
-            {                
+            {
                 var command = move.Split(' ');
                 rope.Move(command[0][0], int.Parse(command[1]));
             }
-
+            
             Console.Clear();
             Console.CursorVisible = true;
             Console.WriteLine(rope.PastTailPositions.Distinct().ToList().Count);
@@ -23,40 +24,100 @@
     internal class Rope
     {
         public void Move(char direction, int times)
-        {            
+        {
             for (int i = 0; i < times; i++)
             {
-                //Show();
-                var prevHeadPos = new Position(Head);
                 switch (direction)
                 {
                     case 'R':
-                        Head.X++;
+                        Knots[0].X++;
                         break;
                     case 'L':
-                        Head.X--;
+                        Knots[0].X--;
                         break;
                     case 'U':
-                        Head.Y--;
+                        Knots[0].Y++;
                         break;
                     case 'D':
-                        Head.Y++;
+                        Knots[0].Y--;
                         break;
                     default:
                         break;
                 }
-                
-                PastTailPositions.Add(Tail);
 
-                if (Head.IsTooFarFrom(Tail))
+                for (int j = 1; j < Knots.Length; j++)
                 {
-                    Tail = prevHeadPos;
+                    if (j == Knots.Length - 1)
+                    {
+                        PastTailPositions.Add(new Position(Knots[j]));
+                    }
+                    if (Knots[j - 1].IsTooFarFrom(Knots[j]))
+                    {
+                        if (Knots[j - 1].X == Knots[j].X)
+                        {
+                            if (Knots[j - 1].Y > Knots[j].Y)
+                            {
+                                Knots[j].Y++;
+                            }
+                            else
+                            {
+                                Knots[j].Y--;
+                            }
+                        }
+                        else if (Knots[j - 1].Y == Knots[j].Y)
+                        {
+                            if (Knots[j - 1].X > Knots[j].X)
+                            {
+                                Knots[j].X++;
+                            }
+                            else
+                            {
+                                Knots[j].X--;
+                            }
+                        }
+                        else
+                        {
+                            if (Knots[j - 1].Y > Knots[j].Y)
+                            {
+                                Knots[j].Y++;
+                            }
+                            else
+                            {
+                                Knots[j].Y--;
+                            }
+                            if (Knots[j - 1].X > Knots[j].X)
+                            {
+                                Knots[j].X++;
+                            }
+                            else
+                            {
+                                Knots[j].X--;
+                            }
+                        }
+                    }
+
+                    if (j == Knots.Length - 1)
+                    {
+                        PastTailPositions.Add(new Position(Knots[j]));
+                    }
                 }
             }
+            //Show();
         }
 
-        public Position Head { get; set; } = new(0, 0);
-        public Position Tail { get; set; } = new(0, 0);
+        public Position[] Knots { get; set; } =
+        {
+            new(0,0),
+            new(0,0),
+            new(0,0),
+            new(0,0),
+            new(0,0),
+            new(0,0),
+            new(0,0),
+            new(0,0),
+            new(0,0),
+            new(0,0)
+        };
 
         public List<Position> PastTailPositions { get; set; } = new();
 
@@ -64,12 +125,13 @@
         {
             Console.Clear();
 
-            Console.SetCursorPosition(Tail.X + 40, 12 - Tail.Y);
-            Console.Write("T");
-            Console.SetCursorPosition(Head.X + 40, 12 - Head.Y);
-            Console.Write("H");
+            for (int i = Knots.Length - 1; i >= 0; i--)
+            {
+                Console.SetCursorPosition(Knots[i].X + 50, 20 - Knots[i].Y);
+                Console.Write(i);
+            }
 
-            //Thread.Sleep(200);
+            Thread.Sleep(400);
         }
     }
     internal class Position : IEquatable<Position>
