@@ -7,21 +7,16 @@
             Console.WriteLine("Hello, Advent of Code 2022 Day 10");
             var instructions = File.ReadAllLines("Input2.txt");
             var cpu = new CPU(instructions);
-            var signalLengths = cpu.Run(220).ToArray();
-            Console.WriteLine(signalLengths[19]);
-            Console.WriteLine(signalLengths[59]);
-            Console.WriteLine(signalLengths[99]);
-            Console.WriteLine(signalLengths[139]);
-            Console.WriteLine(signalLengths[179]);
-            Console.WriteLine(signalLengths[219]);
-
-            var sum = signalLengths[19] +
-            signalLengths[59]+
-            signalLengths[99]+
-            signalLengths[139]+
-            signalLengths[179]+
-            signalLengths[219];
-            Console.WriteLine(sum);
+            Console.Clear();
+            var signalLengths = cpu.Run(240).ToArray();
+            
+            //var sum = signalLengths[19] +
+            //signalLengths[59]+
+            //signalLengths[99]+
+            //signalLengths[139]+
+            //signalLengths[179]+
+            //signalLengths[219];
+            //Console.WriteLine(sum);
         }
     }
 
@@ -45,6 +40,7 @@
             {
                 yield return cycle * X;
                 var Instr = Instructions[i];
+                DrawPixel(X, cycle);
                 switch (Instr.Command)
                 {
                     case "noop":                        
@@ -67,6 +63,23 @@
                 {
                     i = 0;
                 }
+            }
+        }
+
+        public static void DrawPixel(int spritePos, int cycle)
+        {
+            var pos = (cycle-1) % 40;
+            if (spritePos - 1 <= pos && spritePos + 1 >= pos )
+            {
+                Console.Write('#');
+            }
+            else
+            {
+                Console.Write(' ');
+            }
+            if (cycle % 40 == 0 )
+            {
+                Console.WriteLine();
             }
         }
     }
