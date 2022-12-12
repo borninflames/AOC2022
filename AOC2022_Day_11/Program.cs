@@ -9,23 +9,27 @@ namespace AOC2022_Day_11
             Console.WriteLine("Hello, Advent of Code 2022 Day 11");
             Monkey[] monkeys = ParseMonkeyDescriptions();
 
-            for (int round = 1; round <= 20; round++)
+            long mod = monkeys.Aggregate(1L, (mod, monkey) => mod * monkey.TestNumber);
+            for (int round = 1; round <= 10000; round++)
             {
                 foreach (var monkey in monkeys)
                 {
-                    monkey.InspectItems();
+                    monkey.InspectItems(mod);
                 }
-                Console.WriteLine($"After round {round}:");
-                foreach (var monkey in monkeys)
+                if (round % 10000 == 0)
                 {
-                    Console.WriteLine(monkey);
+                    Console.WriteLine($"After round {round}:");
+                    foreach (var monkey in monkeys)
+                    {
+                        Console.WriteLine(monkey);
 
+                    }
+                    Console.WriteLine();
                 }
-                Console.WriteLine();
 
-                var maxTwo = monkeys.Select(x => x.InspectedItems).OrderByDescending(x => x).ToList().Take(2).ToArray();
-                Console.WriteLine(maxTwo[0] * maxTwo[1]);
             }
+            var maxTwo = monkeys.Select(x => x.InspectedItems).OrderByDescending(x => x).ToList().Take(2).ToArray();
+            Console.WriteLine(maxTwo[0] * maxTwo[1]);
         }
 
         private static Monkey[] ParseMonkeyDescriptions()
@@ -83,22 +87,22 @@ namespace AOC2022_Day_11
         }
 
         public int Name { get; set; }
-        public Queue<int> Items = new();
+        public Queue<long> Items = new();
 
         public string? Operation { get; set; }
         public int OperationNumber { get; set; }
 
-        public int TestNumber { get; set; }
+        public long TestNumber { get; set; }
         public int IfTrueThrowToMonkey { get; set; }
         public int IfFalseThrowToMonkey { get; set; }
 
-        public int InspectedItems { get; private set; }
+        public long InspectedItems { get; private set; }
 
-        public void InspectItems()
+        public void InspectItems(long mod)
         {
             if (Items.Count > 0)
             {
-                while (Items.TryDequeue(out int item))
+                while (Items.TryDequeue(out long item))
                 {
                     InspectedItems++;
                     switch (Operation)
@@ -120,14 +124,14 @@ namespace AOC2022_Day_11
                             break;
                     }
 
-                    item /= 3;
+                    item %= mod;
 
                     Test(item);
                 }
             }
         }
 
-        public void Test(int item)
+        public void Test(long item)
         {
             if (item % TestNumber == 0)
             {
